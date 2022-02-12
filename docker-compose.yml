@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "soa"
+      POSTGRES_USER: "sa"
+      POSTGRES_PASSWORD: "pass"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  haproxy:
+    image: haproxy
+    volumes:
+        - ./haproxy:/usr/local/etc/haproxy
+    ports:
+      - "7777:7777"
