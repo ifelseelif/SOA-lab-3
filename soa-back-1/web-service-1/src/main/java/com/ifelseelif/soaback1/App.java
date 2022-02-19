@@ -16,7 +16,6 @@ public class App extends Application {
 
     public App() {
         super();
-        System.out.println("Start");
 
         Properties properties = ConfigReader.getProperties();
         String port = properties.getProperty("server_port");
@@ -33,7 +32,7 @@ public class App extends Application {
                 .check(ImmutableRegCheck.builder()
                         .tlsSkipVerify(true)
                         .http(properties.getProperty("server_address") + ":" + port + "/soa-back-1/products")
-                        .interval("30s")
+                        .interval("10s")
                         .build())
                 .build();
 
