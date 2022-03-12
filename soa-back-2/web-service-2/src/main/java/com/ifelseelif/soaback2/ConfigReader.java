@@ -1,4 +1,4 @@
-package com.ifelseelif.soaback2.util;
+package com.ifelseelif.soaback2;
 
 import java.io.FileInputStream;
 import java.util.Properties;

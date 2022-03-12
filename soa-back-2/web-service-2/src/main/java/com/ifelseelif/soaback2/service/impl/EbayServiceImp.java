@@ -11,14 +11,12 @@ import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.model.health.Service;
 import com.orbitz.consul.model.health.ServiceHealth;
 
-import javax.ejb.Remote;
-import javax.ejb.Stateless;
+import javax.jws.WebService;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
@@ -26,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-@Stateless
-@Remote(EbayService.class)
+@WebService(serviceName = "ebay_service", endpointInterface = "com.ifelseelif.soaback2.service.EbayService")
 public class EbayServiceImp implements EbayService {
     private Properties properties = ConfigReader.getProperties();
 
@@ -44,12 +41,10 @@ public class EbayServiceImp implements EbayService {
         WebTarget target = getTarget();
 
         if (target == null) {
-            throw new HttpException("Can't setup SSL", 400);
+            throw new HttpException("Consul can't find active serivce", 400);
         }
 
         while (true) {
-
-
             String json = target.path("products").queryParam("manufacturer.id", "=;" + manufacturerId)
                     .queryParam("pageIndex", skip).request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -61,6 +56,9 @@ public class EbayServiceImp implements EbayService {
             if (productList.size() == 0) {
                 break;
             }
+        }
+        if (products.isEmpty()) {
+            throw new HttpException("продукты не найдены", 404);
         }
 
         return products;
@@ -74,7 +72,7 @@ public class EbayServiceImp implements EbayService {
 
         WebTarget target = getTarget();
         if (target == null) {
-            throw new HttpException("Can't setup SSL", 400);
+            throw new HttpException("Consul can't find active serivce", 400);
         }
 
         long skip = 0;
@@ -87,7 +85,8 @@ public class EbayServiceImp implements EbayService {
             for (Product p :
                     productList) {
                 WebTarget target2 = getTarget();
-                p.setPrice(p.getPrice() + (p.getPrice() / 100f * percent));
+                if (p.getPrice() == null) continue;
+                p.setPrice(p.getPrice() + (p.getPrice() * (percent / 100f)));
                 target2.path("products").path("/" + p.getId()).request().put(Entity.entity(p, MediaType.APPLICATION_JSON));
             }
             skip += productList.size();
@@ -115,7 +114,7 @@ public class EbayServiceImp implements EbayService {
             serviceAddress = service.getAddress();
             System.out.println("It's okay " + serviceAddress);
         }
-        String BACK_2_URI = serviceAddress + ":" + service.getPort() + "/" + properties.getProperty("server_1_path" + "/");
+        String BACK_2_URI = serviceAddress + ":" + service.getPort() + "/" + properties.getProperty("server_1_path") + "/";
         System.out.println(BACK_2_URI);
 
         try {

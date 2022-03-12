@@ -9,7 +9,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>web-service-2</module>
-        <module>ejb-2</module>
     </modules>
     <name>soa-back-2</name>
     <packaging>pom</packaging>
