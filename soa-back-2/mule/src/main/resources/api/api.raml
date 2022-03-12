@@ -1,0 +1,38 @@
+#%RAML 1.0
+title: ebay_serive
+mediaType:
+  - application/json
+baseUri: /soa-back-2/ebay_service
+protocols:
+  - HTTP
+/filter/manufacturer/{manufacturerId}:
+  get:
+    displayName: getAllProducts
+    responses:
+      "200":
+        body:
+          type: object
+      "404":
+        body:
+          type: object
+  uriParameters:
+    manufacturerId:
+      example: 1
+      type: number
+      format: int
+/price/increase/{percent}:
+  post:
+    displayName: increasePrice
+    responses:
+      "200":
+        body:
+          type: object
+      "400":
+        body:
+          type: object
+    securedBy: []
+  uriParameters:
+      percent:
+        example: 1
+        type: number
+        format: int

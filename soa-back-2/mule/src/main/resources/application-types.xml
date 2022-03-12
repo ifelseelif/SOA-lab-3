@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="manufacturerId" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: number]]></types:shape>
+    </types:type>
+    <types:type name="percent" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: integer]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#f91d86df-733e-46db-8b4d-410f175e17d4">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="manufacturerId" type="manufacturerId"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#c4601205-4d02-40ff-999f-2c82dcf0dd4b">
+    <types:operation-declaration>
+      <types:inputs>
+        <types:parameter name="value" type="manufacturerId"/>
+      </types:inputs>
+    </types:operation-declaration>
+  </types:enrichment>
+</types:mule>
